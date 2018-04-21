@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
 <title>Login Page</title>
 <meta charset="UTF-8">
@@ -6,6 +5,8 @@
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+</script>
 <style>
 body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 .w3-row-padding img {margin-bottom: 12px}
@@ -46,23 +47,57 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
     <h1 class="w3-jumbo">News Feed</h1>
     <p>Welcome to the news feed.</p>
   </header>
+  <!-- End Header/Home Section -->
 
   <!-- Login -->
   <div class="w3-content w3-justify w3-text-grey w3-padding-64" id="about">
     <h2 class="w3-text-light-grey">Please Login</h2>
     <hr style="width:200px" class="w3-opacity">
-    <form action="/action_page.php" target="_blank">
-      <p><input class="w3-input w3-padding-16" type="text" placeholder="User Name" required name="Username"></p>
-      <p><input class="w3-input w3-padding-16" type="text" placeholder="Password" required name="Password"></p>
+    <form id=login-form>
+      <p><input class="w3-input w3-padding-16" value="ian" type="text" placeholder="User Name" id="usr" name="usr" required name="Username"></p>
+      <p><input class="w3-input w3-padding-16" value="ian" type="password" placeholder="Password" id="pwd" name="pwd" required name="Password"></p>
       <p>
-        <button class="w3-button w3-light-grey w3-padding-large" type="submit">SUBMIT</button>
+        <button class="w3-button w3-light-grey w3-padding-large" id=submit type="submit">SUBMIT</button>
       </p>
     </form>
-  <!-- End Contact Section -->
   </div>
+  <!-- End Login Section -->
 
 <!-- END PAGE CONTENT -->
 </div>
+<script>
 
+  $(document).ready(function(){
+    var xml;
+    console.log("damn");
+    $('#login-form').submit(login)
+  });
+
+  function login() {
+    console.log("clicked");
+    $.ajax({
+      type: "GET",
+      url: "users.xml",
+      dataType: "xml",
+      success: function(xml){
+      console.log("got");
+      $(xml).find('user').each( function() {
+        var item = $(this);
+        if( (item.find('username').text()==$('#usr').val()) && (item.find('password').text()==$('#pwd').val()) ) 
+        {
+          window.location = 'http://www.se.rit.edu/~ijl8216/news-feed/index.html';
+        } else {
+          console.log("fuck");
+        }
+      });
+      },
+      error: function() {
+        alert("An error occurred while logging in.");
+      }
+    });
+  }
+
+</script>
+ 
 </body>
 </html>
