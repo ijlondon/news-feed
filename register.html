@@ -26,11 +26,11 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
     <i class="fa fa-home w3-xxlarge"></i>
     <p>HOME</p>
   </a>
-  <a href="login.html" class="w3-bar-item w3-button w3-padding-large w3-black">
+  <a href="login.html" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
     <i class="fa fa-sign-in w3-xxlarge"></i>
     <p>LOGIN</p>
   </a>
-  <a href="register.html" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+  <a href="register.html" class="w3-bar-item w3-button w3-padding-large w3-black">
     <i class="fa fa-user-plus w3-xxlarge"></i>
     <p>REGISTER</p>
   </a>  
@@ -52,24 +52,24 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
     <h1 class="w3-jumbo">News Feed</h1>
     <p>Welcome to the news feed.</p>
   </header>
-  <!-- End Header/Home Section -->
 
   <!-- Login -->
   <div class="w3-content w3-justify w3-text-grey w3-padding-64" id="about">
     <h2 class="w3-text-light-grey">Please Login</h2>
     <hr style="width:200px" class="w3-opacity">
-    <form id=login-form>
-      <p><input class="w3-input w3-padding-16" type="text" placeholder="User Name" id="usr" name="usr" required name="Username"></p>
-      <p><input class="w3-input w3-padding-16" type="password" placeholder="Password" id="pwd" name="pwd" required name="Password"></p>
+    <form method = "post">
+      <p><input class="w3-input w3-padding-16" type="text" placeholder="User Name" required name="Username"></p>
+      <p><input class="w3-input w3-padding-16" type="password" placeholder="Password" required name="Password"></p>
       <p>
-        <button class="w3-button w3-light-grey w3-padding-large" id=submit type="submit">SUBMIT</button>
+      <button class="w3-button w3-light-grey w3-padding-large" name="register" type="submit">REGISTER</button>
       </p>
     </form>
+  <!-- End Contact Section -->
   </div>
-  <!-- End Login Section -->
 
 <!-- END PAGE CONTENT -->
 </div>
+
 <script>
 
   $(document).ready(function(){
@@ -97,12 +97,12 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
       });
       },
       error: function() {
-        alert("An error occurred while logging in.");
+        alert("An error occurred while loggin in.");
       }
     });
   }
 
 </script>
- 
+  
 </body>
 </html>
