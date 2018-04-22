@@ -34,7 +34,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
     <i class="fa fa-user-plus w3-xxlarge"></i>
     <p>REGISTER</p>
   </a>  
-</nav>
+  </nav>
 
 <!-- Navbar on small screens (Hidden on medium and large screens) -->
 <div class="w3-top w3-hide-large w3-hide-medium" id="myNavbar">
@@ -59,8 +59,9 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
     <h2 class="w3-text-light-grey">Please Login</h2>
     <hr style="width:200px" class="w3-opacity">
     <form id=login-form>
-      <p><input class="w3-input w3-padding-16" type="text" placeholder="User Name" id="usr" name="usr" required name="Username"></p>
-      <p><input class="w3-input w3-padding-16" type="password" placeholder="Password" id="pwd" name="pwd" required name="Password"></p>
+      <p><input class="w3-input w3-padding-16" value="ian" type="text" placeholder="User Name" id="usr" name="usr" required name="Username"></p>
+      <p><input class="w3-input w3-padding-16" value="ian" type="password" placeholder="Password" id="pwd" name="pwd" required name="Password"></p>
+      <output class="w3-text-red" id="error" name="result"></output>
       <p>
         <button class="w3-button w3-light-grey w3-padding-large" id=submit type="submit">SUBMIT</button>
       </p>
@@ -73,33 +74,42 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 <script>
 
   $(document).ready(function(){
-    var xml;
-    console.log("damn");
+    console.log("who is it?");
     $('#login-form').submit(login)
   });
 
   function login() {
     console.log("clicked");
-    $.ajax({
-      type: "GET",
-      url: "users.xml",
-      dataType: "xml",
-      success: function(xml){
-      console.log("got");
-      $(xml).find('user').each( function() {
-        var item = $(this);
-        if( (item.find('username').text()==$('#usr').val()) && (item.find('password').text()==$('#pwd').val()) ) 
-        {
-          window.location = 'http://www.se.rit.edu/~ijl8216/news-feed/index.html';
-        } else {
-          console.log("fuck");
-        }
-      });
-      },
-      error: function() {
-        alert("An error occurred while logging in.");
-      }
-    });
+    var usr=$('#usr').val();
+    var pwd=$('#pwd').val();
+    if(!localStorage.getItem(usr)){
+      document.getElementById("error").innerHTML = "username doesnt exist";
+    } else if (localStorage.getItem(usr) == pwd) {
+      localStorage.setItem("current",usr)
+        $.ajax({
+          type: "GET",
+          url: "users.xml",
+          dataType: "xml",
+          success: function(xml){
+          console.log("got");
+          $(xml).find('user').each( function() {
+            var item = $(this);
+            window.location = 'http://www.se.rit.edu/~ijl8216/news-feed/index.html';
+            if( (item.find('username').text()==$('#usr').val()) && (item.find('password').text()==$('#pwd').val()) ) 
+            {
+              window.location = 'http://www.se.rit.edu/~ijl8216/news-feed/index.html';
+            } else {
+              console.log("darn");
+            }
+          });
+          },
+          error: function() {
+            alert("An error occurred while loggin in.");
+          }
+        });
+    } else {
+      document.getElementById("error").innerHTML = "incorrect password";
+    }
   }
 
 </script>

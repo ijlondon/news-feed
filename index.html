@@ -6,6 +6,8 @@
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+</script>
 <style>
 body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 .w3-row-padding img {margin-bottom: 12px}
@@ -16,7 +18,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 /* Remove margins from "page content" on small screens */
 @media only screen and (max-width: 600px) {#main {margin-left: 0}}
 </style>
-<body class="w3-black">
+<body onload="welcome()" class="w3-black">
 
 <!-- Icon Bar (Sidebar - hidden on small screens) -->
 <nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center">
@@ -53,8 +55,8 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 <div class="w3-padding-large" id="main">
   <!-- Header/Home -->
   <header class="w3-container w3-padding-32 w3-center w3-black" id="home">
-    <h1 class="w3-jumbo"><span class="w3-hide-small">Hello</span> John Doe.</h1>
-    <p>Welcome back</p>
+    <h1 class="w3-jumbo"><span id="hello" class="w3-hide-small">Hello</span></h1>
+    <p id="lastlog">Welcome back</p>
   </header>
 
   <!-- Profile Section -->
@@ -97,6 +99,29 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 
 <!-- END PAGE CONTENT -->
 </div>
+<script>
 
+    $(document).ready(function(){
+      console.log("hello");
+    });
+
+    function welcome() {
+      if(!localStorage.getItem("current")){
+        window.location = 'http://www.se.rit.edu/~ijl8216/news-feed/login.html';
+      } else {
+        var name = localStorage.getItem("current");
+        document.getElementById("hello").innerHTML = "Hello " + name;
+        document.getElementById("lastlog").innerHTML = "Your last visit was " + lastlog;
+      }
+
+      if(!localStorage.getItem('lastlog')){
+        localStorage.setItem('lastlog', new Date().toLocaleString()); 
+      } else {
+        var lastlog = localStorage.getItem("lastlog");
+        document.getElementById("lastlog").innerHTML = "Your last visit was " + lastlog;
+      }
+    }
+
+</script>  
 </body>
 </html>

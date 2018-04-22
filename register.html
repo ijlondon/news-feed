@@ -1,5 +1,5 @@
 <html>
-<title>Login Page</title>
+<title>Register</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -55,11 +55,14 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 
   <!-- Login -->
   <div class="w3-content w3-justify w3-text-grey w3-padding-64" id="about">
-    <h2 class="w3-text-light-grey">Please Login</h2>
-    <hr style="width:200px" class="w3-opacity">
-    <form method = "post">
-      <p><input class="w3-input w3-padding-16" type="text" placeholder="User Name" required name="Username"></p>
-      <p><input class="w3-input w3-padding-16" type="password" placeholder="Password" required name="Password"></p>
+    <h2 class="w3-text-light-grey">Register</h2>
+    <hr style="width:133px" class="w3-opacity">
+    <form id="register-form">
+      <p oninput="checkUsers()"><input class="w3-input w3-padding-16" type="text" placeholder="User Name" required id="usr" name="usr"></p>
+      <p><input class="w3-input w3-padding-16" type="password" placeholder="Password" required id="pwd" name="pwd"></p>
+      <p><input class="w3-input w3-padding-16" type="password" placeholder="Confirm Password" required id="pwd2" name="pwd2"
+        oninput="result.value=(pwd.value==pwd2.value)?'':'Passwords do not match!'"></p>
+      <output class="w3-text-red" id="error" name="result"></output>
       <p>
       <button class="w3-button w3-light-grey w3-padding-large" name="register" type="submit">REGISTER</button>
       </p>
@@ -73,33 +76,70 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 <script>
 
   $(document).ready(function(){
-    var xml;
     console.log("damn");
-    $('#login-form').submit(login)
+    $('#register-form').submit(register)
   });
 
-  function login() {
+  function checkUsers() {
+    // var usr=$('#usr').val();
+    var usr=document.getElementById("usr").value;
+    if(localStorage.getItem(usr)){
+      document.getElementById("error").innerHTML = "username is taken";
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          var xml=this.responseXML;
+          $(xml).find('user').each( function() {
+            var item = $(this);
+            if( item.find('username').text()==$('#usr').val() ) 
+            {
+              console.log("username is taken!");
+              document.getElementById("error").innerHTML = "Username is taken";
+            } else {
+              console.log("new username");
+            }
+          });
+        }
+      };
+      xhttp.open("GET", "users.xml", true);
+      xhttp.send();
+    } else {
+      document.getElementById("error").innerHTML = "";
+    }
+  }
+
+
+  function register() {
     console.log("clicked");
-    $.ajax({
-      type: "GET",
-      url: "users.xml",
-      dataType: "xml",
-      success: function(xml){
-      console.log("got");
-      $(xml).find('user').each( function() {
-        var item = $(this);
-        if( (item.find('username').text()==$('#usr').val()) && (item.find('password').text()==$('#pwd').val()) ) 
-        {
+    var usr=$('#usr').val();
+    var pwd=$('#pwd').val();
+    if(localStorage.getItem(usr)){
+      document.getElementById("error").innerHTML = "username is taken";
+    } else if(pwd !== ($('#pwd2').val()) ) {
+      document.getElementById("error").innerHTML = "passwords still do not match";
+    } else {
+      localStorage.setItem(usr,pwd);
+      localStorage.setItem("current",usr)
+      $.ajax({
+        type: "get",
+        url: "users.xml",
+        dataType: "xml",
+        success: function(xml){
+        console.log("got");
+        $(xml).find('user').each( function() {
+          var item = $(this);
           window.location = 'http://www.se.rit.edu/~ijl8216/news-feed/index.html';
-        } else {
-          console.log("fuck");
+          if( item.find('username').text()==$('#usr').val() ) 
+          {
+            console.log("username is taken fool");
+            document.getElementById("error").innerHTML = "Username is taken";
+          } else {
+            console.log("new username");
+          }
+        });
         }
       });
-      },
-      error: function() {
-        alert("An error occurred while loggin in.");
-      }
-    });
+    }
   }
 
 </script>
