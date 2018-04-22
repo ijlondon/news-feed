@@ -31,9 +31,9 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
     <i class="fa fa-user w3-xxlarge"></i>
     <p>PROFILE</p>
   </a>
-  <a href="#photos" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+  <a href="#stories" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
     <i class="fa fa-eye w3-xxlarge"></i>
-    <p>PHOTOS</p>
+    <p>STORIES</p>
   </a>
   <a href="login.html" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
     <i class="fa fa-sign-out w3-xxlarge"></i>
@@ -46,7 +46,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
     <a href="#" class="w3-bar-item w3-button" style="width:25% !important">HOME</a>
     <a href="#profile" class="w3-bar-item w3-button" style="width:25% !important">PROFILE</a>
-    <a href="#photos" class="w3-bar-item w3-button" style="width:25% !important">PHOTOS</a>
+    <a href="#stories" class="w3-bar-item w3-button" style="width:25% !important">STORIES</a>
     <a href="login.html" class="w3-bar-item w3-button" style="width:25% !important">LOGOUT</a>
   </div>
 </div>
@@ -60,50 +60,111 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   </header>
 
   <!-- Profile Section -->
-  <div class="w3-content w3-justify w3-text-grey w3-padding-64" id="profile">
+  <div class="w3-content w3-justify w3-text-grey w3-padding-64" id="feed-select">
     <h2 class="w3-text-light-grey">My Feeds</h2>
-    <hr style="width:200px" class="w3-opacity">
-    <p>Some text about using the news feed. I am lorem ipsum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-      ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur
-      adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-    </p>
+    <hr style="width:150px" class="w3-opacity">
+    <p>Please select one of the feeds below to see related news stories...</p>
     <div class="w3-row w3-padding-large w3-center w3-section w3-light-grey">
-      <div class="w3-quarter w3-button w3-xlarge">Feed 1</div>
-      <div class="w3-quarter w3-button w3-xlarge">Feed 2</div>
-      <div class="w3-quarter w3-button w3-xlarge">Feed 3</div>
-      <div class="w3-quarter w3-button w3-xlarge">All Feeds</div>
+      <button onclick="feeder('nba')" class="w3-quarter w3-button w3-xlarge">NBA</button>
+      <button onclick="feeder('mlb')" class="w3-quarter w3-button w3-xlarge">MLB</button>
+      <button onclick="feeder('nhl')" class="w3-quarter w3-button w3-xlarge">NHL</button>
+      <button onclick="feedAll()" class="w3-quarter w3-button w3-xlarge">All Feeds</button>
     </div>
     <!-- End Feed Select -->
   </div>
   <!-- End Profile Section -->
   
-  <!-- Photos Section -->
-  <div class="w3-padding-64 w3-content" id="photos">
-    <h2 class="w3-text-light-grey">My Photos</h2>
-    <hr style="width:200px" class="w3-opacity">
+  <!-- Feed Section -->
+  <div class="w3-padding-64 w3-content" id="stories">
+    <h2 class="w3-text-light-grey">Stories</h2>
+    <hr style="width:105px" class="w3-opacity">
 
-    <!-- Grid for photos -->
+    <!-- Grid for feed -->
     <div class="w3-row-padding" style="margin:0 -16px">
-      <div class="w3-half">
-        <img src="/image.jpg" style="width:100%">
-        <img src="/image.jpg" style="width:100%">
-      </div>
-
-      <div class="w3-half">
-        <img src="/image.jpg" style="width:100%">
-      </div>
-    <!-- End photo grid -->
+      <div id="feed" style="width:100%"></div>
+    <!-- End feed grid -->
     </div>
-  <!-- End Photos Section -->
+  <!-- End Feed Section -->
   </div>
 
 <!-- END PAGE CONTENT -->
 </div>
 <script>
+    var feed = [];
+    var nodeList = [];
 
     $(document).ready(function(){
       console.log("hello");
     });
+
+    function feeder(channel) {
+      console.log("feed() hit");
+      var feed=[];
+      $('#feed').empty();
+      var url = "http://www.espn.com/espn/rss/" + channel + "/news"
+      $.get(url).done(data => { 
+        xmlLoaded(data);
+      });
+    }
+
+    function feedAll(channel) {
+      console.log("feedAll() hit");
+      var feed=[];
+      urls=["http://www.espn.com/espn/rss/mlb/news",
+        "http://www.espn.com/espn/rss/nba/news",
+        "http://www.espn.com/espn/rss/nhl/news"];
+      $('#feed').empty();
+      var url = "http://www.espn.com/espn/rss/" + channel + "/news"
+      urls.forEach(url => { 
+        $.get(url).done(data => { 
+          xmlLoaded(data);
+        });
+      });
+    }
+
+    function xmlLoaded(obj){
+      var items = obj.querySelectorAll("item");
+      var feed=[];
+      //show the logo
+      var image = obj.querySelector("image");
+      var logoSrc = image.querySelector("url").firstChild.nodeValue;
+      var logoLink = image.querySelector("link").firstChild.nodeValue;
+      
+      var itemsObjects = Array.from(items).map(newsItem => {
+        return {
+          title: newsItem.querySelector("title").firstChild.nodeValue,
+          description: newsItem.querySelector("description").firstChild.nodeValue,
+          pubDate: newsItem.querySelector("pubDate").firstChild.nodeValue,
+          link: newsItem.querySelector("link").firstChild.nodeValue,
+          guid: newsItem.querySelector("guid").firstChild.nodeValue,
+        }
+      });
+      nodeList = nodeList.concat(items);
+      feed = feed.concat(itemsObjects)
+        .sort((story1, story2) => {
+          return new Date(story2.pubDate) - new Date(story1.pubDate);
+        });
+      populateFeed(feed);
+    }	
+
+    function populateFeed(feed) {
+      
+      $('#feed').empty();
+      
+      feed.forEach(item => {
+        //present the item as HTML
+        var line = '<div class="item card row">';
+        line += '<div class="card-body">';
+        line += '<h2 class="card-title">' + item.title + "</h2>";
+        line += '<p><i>' + item.pubDate + '</i> - <a href="' + item.link + '" target="_blank">See original</a></p>';
+        //title and description are always the same (for some reason) so I'm only including one
+        line += '<div class="card-text">' + item.description + '</div>';
+        line += '<button class="fa fa-star w3-light-grey w3-button"> Favorite</button>';
+        line += "</div>";
+        line += "</div>";
+        $('#feed').append(line);
+      })
+    }
 
     function welcome() {
       if(!localStorage.getItem("current")){
